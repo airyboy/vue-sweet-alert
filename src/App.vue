@@ -1,10 +1,16 @@
 <template>
   <div id="app">
-    <button @click="showModal = !showModal">Toggle</button>
-    <sweet-alert :show="showModal" title="Awesome title" @modalClosed="showModal = false" icon="success">
+    <pre>Modal = {{ showModal }}</pre>
+    <button @click="showSimple">Simple</button>
+    <button @click="showSuccess">Success</button>
+    <button @click="showError">Error</button>
+    <button @click="showWarning">Warning</button>
+    <button @click="showQuestion">Question</button>
+    <sweet-alert :show="showModal" title="Awesome title" @modalClosed="showModal = false" :icon="iconType">
       <div>some content here</div>
       <!-- <iframe width="640" height="480" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe> -->
     </sweet-alert>
+
   </div>
 </template>
 
@@ -17,7 +23,30 @@ export default {
   data () {
     return {
       showModal: false,
-      email: "my@email.com"
+      email: "my@email.com",
+      iconType: "none"
+    }
+  },
+  methods: {
+    showSimple() {
+      this.iconType = "none";
+      this.showModal = true;
+    },
+    showWarning() {
+      this.iconType = "warning";
+      this.showModal = true;
+    },
+    showError() {
+      this.iconType = "error";
+      this.showModal = true;
+    },
+    showSuccess() {
+      this.iconType = "success";
+      this.showModal = true;
+    },
+    showQuestion() {
+      this.iconType = "question";
+      this.showModal = true;
     }
   }
 }

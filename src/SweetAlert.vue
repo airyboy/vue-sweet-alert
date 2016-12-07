@@ -3,8 +3,16 @@
   <div class="swal2-container swal2-fade swal2-in" v-show="show">
     <div class="swal2-modal swal2-show" style="padding: 20px;" tabindex="0">
       <div class="swal2-icon swal2-success" v-if="icon == 'success'">
-        <span class="line tip"></span> <span class="line long"></span>
-        <div class="placeholder"></div> <div class="fix"></div>
+        <span class="line tip"></span> 
+        <span class="line long"></span>
+        <div class="placeholder"></div> 
+        <div class="fix"></div>
+      </div>
+      <div class="swal2-icon swal2-error" v-if="icon == 'error'">
+        <span class="x-mark">
+          <span class="line left"></span>
+          <span class="line right"></span>
+        </span>
       </div>
       <div class="swal2-icon swal2-question"  v-if="icon == 'question'">?</div>
       <div class="swal2-icon swal2-warning"  v-if="icon == 'warning'">!</div>
@@ -39,11 +47,28 @@ export default {
       default: "none"
     }
   },
+  data () {
+    return {
+      
+    }
+  },
   watch: {
     show: function(val) {
       if (val) {
-        
-        this.$nextTick(() => this.$el.querySelector(".swal2-modal").focus());
+        this.$nextTick(() => {
+          this.$el.querySelector(".swal2-modal").focus();
+
+          if (this.icon === "success") { 
+            this.$el.querySelector(".swal2-success").classList.add("animate");
+            this.$el.querySelector(".tip").classList.add("animate-success-tip");
+            this.$el.querySelector(".long").classList.add("animate-success-long");
+          } else if (this.icon === "error") {
+            this.$el.querySelector(".swal2-error").classList.add("animate-error-icon");
+            this.$el.querySelector('.x-mark').classList.add('animate-x-mark');
+          } else if (this.icon === "warning") {
+            this.$el.querySelector(".swal2-warning").classList.add("pulse-warning");
+          }
+        });           
         
         document.body.classList.add("swal2-in");
         this.bindKeyEvents();
@@ -58,16 +83,16 @@ export default {
     this.confirmBut = document.querySelector(".swal2-confirm");
     this.container = document.querySelector(".swal2-container");
 
-    this.cancelBut.addEventListener("click", this.closeClickHandler);
-    this.container.addEventListener("click", this.closeClickHandler);
-    this.confirmBut.addEventListener("click", this.closeClickHandler);
+    ["cancelBut", "container", "confirmBut"].forEach(el => {
+      this[el].addEventListener("click", this.closeClickHandler);
+    });
   },
   beforeDestroy() {
     console.log("destroyed");
     
-    this.cancelBut.removeEventListener("click", this.outsideClickHandler);
-    this.confirmBut.removeEventListener("click", this.outsideClickHandler);
-    this.container.removeEventListener("click", this.outsideClickHandler);
+    ["cancelBut", "container", "confirmBut"].forEach(el => {
+      this[el].removeEventListener("click", this.outsideClickHandler);
+    });
   },
   methods: {
     closeClickHandler: function(e) {
@@ -92,17 +117,13 @@ export default {
       } 
       // ESC
       else if (keyCode === 27) {
+        this.show = false;
         this.$emit("modalClosed", { modalResult: "cancel" });
       }
     },
     unbindKeyEvents() {
       console.log("key events unbound");
       document.removeEventListener("keydown", this.keyPressHandler);
-    }
-  },
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
     }
   }
 }
